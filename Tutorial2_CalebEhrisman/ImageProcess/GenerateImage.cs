@@ -323,5 +323,95 @@ namespace ImageProcess
                 }
             }
         }
+
+        public static void FillTarget(RasterImage image, RasterImage postImage)
+        {
+            int height = image.Height;
+            int width = image.Width;
+            int postHeight = postImage.Height;
+            int postWidth = postImage.Width;
+
+            double scaleX = (double)postWidth / width;
+            double scaleY = (double)postHeight / height;
+
+            //loop over target pixels
+            for (int r = 0; r < postHeight; r++)
+            {
+                for (int c = 0; c < postWidth; c++)
+                {
+                    double targetX = c / scaleX;
+                    double targetY = r / scaleY;
+
+                    postImage[c, r] = BilinearInterpolate(targetX, targetY, image);
+
+                }
+            }
+        }
+
+        public static Color BilinearInterpolate(double x, double y, RasterImage source)
+        {
+            int ix = (int)(x);
+            double ixf = x - ix;      // Fractional part
+            int iy = (int)(y);
+            double iyf = y - iy;
+
+            //check bounds
+            if (ix >= 0 && ix < source.Width - 1 &&
+                       iy >= 0 && iy < source.Height - 1)
+            {
+                //grab neighboring pixels
+                Color upLeft = source[ix, iy];
+                Color lowLeft = source[ix, iy + 1];
+                Color upRight = source[ix + 1, iy];
+                Color lowRight = source[ix + 1, iy + 1];
+
+                //interpolate colors based on fractional part
+                Color temp = ColorHelpers.ColorMultiply((1.0 - ixf) * (1.0 - iyf), upLeft);
+                temp = ColorHelpers.ColorAdd(temp, ColorHelpers.ColorMultiply((1.0 - ixf) * iyf, lowLeft));
+                temp = ColorHelpers.ColorAdd(temp, ColorHelpers.ColorMultiply(ixf * (1.0 - iyf), upRight));
+                temp = ColorHelpers.ColorAdd(temp, ColorHelpers.ColorMultiply(ixf * iyf, lowRight));
+
+                return temp;
+            }
+            else
+            {
+                //out of bounds
+                return Color.White;
+            }
+        }
+
+        public static void MakeAffine(RasterImage image, RasterImage postImage)
+        {
+            int postHeight = postImage.Height;
+            int postWidth = postImage.Width;
+
+            Matrix r1 = Matrix.Identity;
+            r1.TranslatePrepend(postWidth / 4.0, postHeight / 4.0);
+            r1.RotatePrepend(45);
+            r1.TranslatePrepend(-postWidth / 4.0, -postHeight / 4.0);
+            r1.Invert();
+
+            //loop over target pixels
+            for (int r = 0; r < postHeight; r++)
+            {
+                for (int c = 0; c < postWidth; c++)
+                {
+                    System.Windows.Point v = new System.Windows.Point(c, r);
+                    System.Windows.Point v2 = r1.Transform(v);
+
+                    postImage[c, r] = BilinearInterpolate(v2.X, v2.Y, image);
+                }
+            }
+        }
+
+        public static void ArrowWarp(RasterImage image, RasterImage postImage)
+        {
+            int height = image.Height;
+            int width = image.Width;
+            int postHeight = postImage.Height;
+            int postWidth = postImage.Width;
+
+
+        }
     }
 }

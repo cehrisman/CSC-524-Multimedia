@@ -61,9 +61,12 @@
             this.horiztonalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verticalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.diagonalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.monochromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.monochromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.medianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeSquareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeAffineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -204,48 +207,51 @@
             this.thresholdMenu,
             this.warpNearestMenu,
             this.warpBilenearMenu,
-            this.lowpassFilterToolStripMenuItem});
+            this.lowpassFilterToolStripMenuItem,
+            this.makeSquareToolStripMenuItem,
+            this.makeAffineToolStripMenuItem});
             this.processMenu.Name = "processMenu";
             this.processMenu.Size = new System.Drawing.Size(66, 20);
             this.processMenu.Text = "&Generate";
+            this.processMenu.Click += new System.EventHandler(this.processMenu_Click);
             // 
             // copyMenu
             // 
             this.copyMenu.Name = "copyMenu";
-            this.copyMenu.Size = new System.Drawing.Size(148, 22);
+            this.copyMenu.Size = new System.Drawing.Size(180, 22);
             this.copyMenu.Text = "&Copy";
             this.copyMenu.Click += new System.EventHandler(this.copyMenu_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // thresholdMenu
             // 
             this.thresholdMenu.Name = "thresholdMenu";
-            this.thresholdMenu.Size = new System.Drawing.Size(148, 22);
+            this.thresholdMenu.Size = new System.Drawing.Size(180, 22);
             this.thresholdMenu.Text = "&Threshold";
             this.thresholdMenu.Click += new System.EventHandler(this.thresholdMenu_Click);
             // 
             // warpNearestMenu
             // 
             this.warpNearestMenu.Name = "warpNearestMenu";
-            this.warpNearestMenu.Size = new System.Drawing.Size(148, 22);
+            this.warpNearestMenu.Size = new System.Drawing.Size(180, 22);
             this.warpNearestMenu.Text = "&Warp Nearest";
             this.warpNearestMenu.Click += new System.EventHandler(this.warpNearestMenu_Click);
             // 
             // warpBilenearMenu
             // 
             this.warpBilenearMenu.Name = "warpBilenearMenu";
-            this.warpBilenearMenu.Size = new System.Drawing.Size(148, 22);
+            this.warpBilenearMenu.Size = new System.Drawing.Size(180, 22);
             this.warpBilenearMenu.Text = "Warp &Bilenear";
             this.warpBilenearMenu.Click += new System.EventHandler(this.warpBilenearMenu_Click);
             // 
             // lowpassFilterToolStripMenuItem
             // 
             this.lowpassFilterToolStripMenuItem.Name = "lowpassFilterToolStripMenuItem";
-            this.lowpassFilterToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.lowpassFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lowpassFilterToolStripMenuItem.Text = "Lowpass Filter";
             this.lowpassFilterToolStripMenuItem.Click += new System.EventHandler(this.lowpassFilterToolStripMenuItem_Click);
             // 
@@ -260,7 +266,8 @@
             this.horiztonalLineToolStripMenuItem,
             this.verticalLineToolStripMenuItem,
             this.diagonalLineToolStripMenuItem,
-            this.monochromeToolStripMenuItem});
+            this.monochromeToolStripMenuItem,
+            this.medianToolStripMenuItem});
             this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
             this.tasksToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.tasksToolStripMenuItem.Text = "Tasks";
@@ -321,6 +328,13 @@
             this.diagonalLineToolStripMenuItem.Text = "Diagonal Line";
             this.diagonalLineToolStripMenuItem.Click += new System.EventHandler(this.diagonalLineToolStripMenuItem_Click);
             // 
+            // monochromeToolStripMenuItem
+            // 
+            this.monochromeToolStripMenuItem.Name = "monochromeToolStripMenuItem";
+            this.monochromeToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.monochromeToolStripMenuItem.Text = "Monochrome";
+            this.monochromeToolStripMenuItem.Click += new System.EventHandler(this.monochromeToolStripMenuItem_Click);
+            // 
             // openFileDialog
             // 
             this.openFileDialog.Filter = "JPEG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif|PNG Files (*.png)|*.png|BMP File" +
@@ -331,12 +345,26 @@
             this.saveFileDialog.Filter = "JPEG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif|PNG Files (*.png)|*.png|BMP File" +
     "s (*.bmp)|*.bmp";
             // 
-            // monochromeToolStripMenuItem
+            // medianToolStripMenuItem
             // 
-            this.monochromeToolStripMenuItem.Name = "monochromeToolStripMenuItem";
-            this.monochromeToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
-            this.monochromeToolStripMenuItem.Text = "Monochrome";
-            this.monochromeToolStripMenuItem.Click += new System.EventHandler(this.monochromeToolStripMenuItem_Click);
+            this.medianToolStripMenuItem.Name = "medianToolStripMenuItem";
+            this.medianToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.medianToolStripMenuItem.Text = "Median";
+            this.medianToolStripMenuItem.Click += new System.EventHandler(this.medianToolStripMenuItem_Click);
+            // 
+            // makeSquareToolStripMenuItem
+            // 
+            this.makeSquareToolStripMenuItem.Name = "makeSquareToolStripMenuItem";
+            this.makeSquareToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.makeSquareToolStripMenuItem.Text = "Make Square";
+            this.makeSquareToolStripMenuItem.Click += new System.EventHandler(this.makeSquareToolStripMenuItem_Click);
+            // 
+            // makeAffineToolStripMenuItem
+            // 
+            this.makeAffineToolStripMenuItem.Name = "makeAffineToolStripMenuItem";
+            this.makeAffineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.makeAffineToolStripMenuItem.Text = "Make Affine";
+            this.makeAffineToolStripMenuItem.Click += new System.EventHandler(this.makeAffineToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -392,6 +420,9 @@
         private System.Windows.Forms.ToolStripMenuItem verticalLineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem diagonalLineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem monochromeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem medianToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeSquareToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeAffineToolStripMenuItem;
     }
 }
 
