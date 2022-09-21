@@ -227,23 +227,38 @@ namespace ImageProcess
             {
                 for (int c = 0; c < width; c++)
                 {
+                    //Vector 1 (0, height) -> (c, r)
                     y1 = r - height;
                     x1 = c;
 
+                    //vector 2 (0, height) -> (width, 0)
                     y2 = 0 - height;
                     x2 = width;
 
+                    // Magnitude of diagonal
                     x1tox2 = x2 * x2 + y2 * y2;
+
+                    // Dot product of the two vectors
                     dot = (x1 * x2) + (y2 * y1);
 
+                    // Dot product of v2 and itself. 
+                    x1tox2 = (x2 * x2) + (y2 * y2);
+                     
+                    // dividing num and denom of Orthogonal Project Equation
                     t = dot / x1tox2;
-                    x = x2 * t;
-                    y = y2 + height * t;
-                    dprime = x * x + y * y;
-                    ratio = dprime / x1tox2;
 
-                    image[c, r, 0] = (byte)((((double)r + (width - (double)c)) / (height + width) * ratio) * 255.0);
-                    image[c, r, 1] = (byte)((((height - (double)r) + (double)c) / (height + width) * (1 - ratio)) * 255.0);
+                    // Multiply scaler to vector 2
+                    x = x2 * t;
+                    y = height + y2 * t;
+
+                    // Magnitude of distance' 
+                    dprime = Math.Sqrt(x * x + y * y);
+                    
+                    // Taking distance' over distance to get the ratio
+                    ratio = dprime / Math.Sqrt(x1tox2);
+                   
+                    image[c, r, 0] = (byte)((((double)r + (width - (double)c)) / (height + width) * (1 - ratio)) * 255.0);
+                    image[c, r, 1] = (byte)((((height - (double)r) + (double)c) / (height + width) * ratio) * 255.0);
                     image[c, r, 2] = 0;
                 }
             }
@@ -288,14 +303,15 @@ namespace ImageProcess
 
         public static void Monochrome(RasterImage image)
         {
-
+            double mono;
             for (int r = 0; r < image.Height; r++)
             {
                 for (int c = 0; c < image.Width; c++)
                 {
-                    image[c, r, 0] = 0;
-                    image[c, r, 1] = 0;
-                    //image[c, r, 2] = (byte)((height - (double)r) / height * 255.0);
+                    mono = 0.2125 * image[c, r, 0] + 0.7154 * image[c, r, 1] + 0.0721 * image[c, r, 2];
+                    image[c, r, 0] = (byte)mono;
+                    image[c, r, 1] = (byte)mono;
+                    image[c, r, 2] = (byte)mono;
                 }
             }
         }

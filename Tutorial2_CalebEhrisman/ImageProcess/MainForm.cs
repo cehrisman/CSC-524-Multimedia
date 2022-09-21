@@ -427,5 +427,11 @@ namespace ImageProcess
             ProcessImage.DiagonalLine(initImage);
             Invalidate();
         }
+
+        private void monochromeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.Monochrome(initImage);
+            Invalidate();
+        }
     }
 }
