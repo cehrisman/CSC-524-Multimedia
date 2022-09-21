@@ -79,7 +79,7 @@ namespace ImageProcess
         #region File menu
         private void newMenu_Click(object sender, EventArgs e)
         {
-            initImage = new RasterImage();
+            initImage = new RasterImage(100, 300);
             ProcessImage.FillBlack(initImage);
             SetMenuOptionEnable();
             Invalidate();
@@ -352,5 +352,80 @@ namespace ImageProcess
 
         #endregion
 
+        private void dimToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.OnFilterDim(initImage);
+            Invalidate();
+        }
+
+        private void tintToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.OnFilterTint(initImage);
+            Invalidate();
+        }
+
+        private void lowpassFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //make post image if needed
+            if (postImage == null)
+                postImage = new RasterImage(initImage.Width, initImage.Height);
+
+            GenerateImage.OnFilterLowpass(initImage, postImage);
+            Invalidate();
+        }
+
+        private void fillGreenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.FillGreen(initImage);
+            Invalidate();
+        }
+
+        private void fillColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.FillColor(initImage);
+            Invalidate();
+        }
+
+        private void horizontalGradientToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.HorizontalGradient(initImage);
+            Invalidate();
+        }
+
+        private void verticalBlueGradientToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.VerticalGradient(initImage);
+            Invalidate();
+        }
+
+        private void diagonalGradientToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.DigaonalGradient(initImage);
+            Invalidate();
+        }
+
+        private void cornersDiagonalGradientToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.CornersDigaonalGradient(initImage);
+            Invalidate();
+        }
+
+        private void horiztonalLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.HorizontalLine(initImage);
+            Invalidate();
+        }
+
+        private void verticalLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.VerticalLine(initImage);
+            Invalidate();
+        }
+
+        private void diagonalLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessImage.DiagonalLine(initImage);
+            Invalidate();
+        }
     }
 }

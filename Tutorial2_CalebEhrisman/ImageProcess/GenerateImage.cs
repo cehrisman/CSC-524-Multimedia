@@ -277,5 +277,51 @@ namespace ImageProcess
         }
 
 
+        public static void OnFilterLowpass(RasterImage image, RasterImage postImage)
+        {
+            int height = image.Height;
+            int width = image.Width;
+
+            // reset the filtered image and make the same size as the input image
+            int range = 1;
+
+            //loop over pixels
+            for (int r = 0; r < height; r++)
+            {
+                for (int c = 0; c < width; c++)
+                {
+                    Color pixel = Color.Black;
+                    int tallyR = 0;
+                    int tallyG = 0;
+                    int tallyB = 0;
+
+                    //loop over square around this pixel, watching boundaries
+                    for (int i = -range; i <= range; i++)
+                    {
+                        if ((r + i) >= 0 && (r + i) < height)
+                        {
+
+                            for (int j = -range; j <= range; j++)
+                            {
+                                if ((c + j) >= 0 && (c + j) < width)
+                                {
+                                    //tally channels
+                                    pixel = image[c + j, r + i];
+                                    tallyR += pixel.R;
+                                    tallyG += pixel.G;
+                                    tallyB += pixel.B;
+                                }
+                            }
+                        }
+                    }
+
+                    //average values, and set
+                    int square = 2 * range + 1;
+                    square *= square;
+                    pixel = Color.FromArgb(tallyR / square, tallyG / square, tallyB / square);
+                    postImage[c, r] = pixel;
+                }
+            }
+        }
     }
 }
