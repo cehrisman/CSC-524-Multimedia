@@ -211,17 +211,15 @@ namespace ImageProcess
         {
             double height = image.Height;
             double width = image.Width;
-            double y1 = 0;
-            double x1 = 0;
-            double y2 = 0;
-            double x2 = 0;
-            double x = 0;
-            double y = 0;
-            double x1tox2 = 0;
-            double dot = 0;
-            double t = 0;
-            double dprime = 0;
-            double ratio = 0;
+            double y1;
+            double x1;
+            double y2;
+            double x2;
+            double x;
+            double y;
+            double x1tox2;
+            double dot;
+            double t;
 
             for (int r = 0; r < height; r++)
             {
@@ -244,21 +242,16 @@ namespace ImageProcess
                     // Dot product of v2 and itself. 
                     x1tox2 = (x2 * x2) + (y2 * y2);
                      
-                    // dividing num and denom of Orthogonal Project Equation
+                    // dividing num and denom of Orthogonal Project Equation to get final scaler
                     t = dot / x1tox2;
 
-                    // Multiply scaler to vector 2
+                    // Multiply scaler to vector 2 to get new point values
                     x = x2 * t;
                     y = height + y2 * t;
 
-                    // Magnitude of distance' 
-                    dprime = Math.Sqrt(x * x + y * y);
-                    
-                    // Taking distance' over distance to get the ratio
-                    ratio = dprime / Math.Sqrt(x1tox2);
-                   
-                    image[c, r, 0] = (byte)((((double)r + (width - (double)c)) / (height + width) * (1 - ratio)) * 255.0);
-                    image[c, r, 1] = (byte)((((height - (double)r) + (double)c) / (height + width) * ratio) * 255.0);
+                   // Replace r->y and c->x from the orginal gradient equations
+                    image[c, r, 0] = (byte)((((double)y + (width - (double)x)) / (height + width)) * 255.0);
+                    image[c, r, 1] = (byte)((((height - (double)y) + (double)x) / (height + width)) * 255.0);
                     image[c, r, 2] = 0;
                 }
             }

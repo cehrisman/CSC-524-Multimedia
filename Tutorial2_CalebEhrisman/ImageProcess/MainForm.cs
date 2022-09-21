@@ -79,7 +79,7 @@ namespace ImageProcess
         #region File menu
         private void newMenu_Click(object sender, EventArgs e)
         {
-            initImage = new RasterImage(100, 300);
+            initImage = new RasterImage(100, 400);
             ProcessImage.FillBlack(initImage);
             SetMenuOptionEnable();
             Invalidate();
