@@ -419,13 +419,17 @@ namespace ImageProcess
             for (int r = 0; r < height; r++)
             {
                 for (int c = 0; c < width; c++)
-                {
+                {       
+                        // Starts at height / height/2 or 100%
+                        // Goes down to 0% or height - r (currently at height/2) over (height/2)
+                        // Now when we are above the halfway then this doesnt work 
+                        // need to start at 0 again or 
                         xShiftPercent = (height - r) / (height / 2);
                         xShift = xShiftPercent * (r / 2);
                         yprime = r;
                         xprime = c - xShift;
                         if (xprime < width && xprime >= 0)
-                            postImage[ width - xprime, r] = image[c, r];
+                            postImage[xprime, r] = image[c, r];
 
                 }  
             }
