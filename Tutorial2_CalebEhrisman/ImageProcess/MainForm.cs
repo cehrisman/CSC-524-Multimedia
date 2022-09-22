@@ -433,5 +433,42 @@ namespace ImageProcess
             ProcessImage.Monochrome(initImage);
             Invalidate();
         }
+
+        private void processMenu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void medianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //GenerateImage.Median(initImage);
+            Invalidate();
+        }
+
+        private void makeSquareToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //make new square post image
+            int size = Math.Max(initImage.Width, initImage.Height);
+            postImage = new RasterImage(size * 2, size * 2);
+
+            GenerateImage.FillTarget(initImage, postImage);
+            Invalidate();
+        }
+
+        private void makeAffineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int size = Math.Max(initImage.Width, initImage.Height);
+            postImage = new RasterImage(size, size);
+            GenerateImage.MakeAffine(initImage, postImage);
+            Invalidate();
+        }
+
+        private void arrowWarpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int size = Math.Max(initImage.Width, initImage.Height);
+            postImage = new RasterImage(size, size);
+            GenerateImage.ArrowWarp(initImage, postImage);
+            Invalidate();
+        }
     }
 }

@@ -88,6 +88,7 @@
   <ItemGroup>
     <Content Include="res\ImageProcess.ico" />
     <Content Include="res\ImageProcess.png" />
+    <EmbeddedResource Include="res\speckle.jpg" />
     <Content Include="res\Stickman.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
