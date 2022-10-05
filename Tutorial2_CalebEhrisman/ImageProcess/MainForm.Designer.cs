@@ -68,6 +68,7 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.arrowWarpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.skewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -211,7 +212,8 @@
             this.lowpassFilterToolStripMenuItem,
             this.makeSquareToolStripMenuItem,
             this.makeAffineToolStripMenuItem,
-            this.arrowWarpToolStripMenuItem});
+            this.arrowWarpToolStripMenuItem,
+            this.skewToolStripMenuItem});
             this.processMenu.Name = "processMenu";
             this.processMenu.Size = new System.Drawing.Size(66, 20);
             this.processMenu.Text = "&Generate";
@@ -372,8 +374,15 @@
             // 
             this.arrowWarpToolStripMenuItem.Name = "arrowWarpToolStripMenuItem";
             this.arrowWarpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.arrowWarpToolStripMenuItem.Text = "Arrow Warp";
+            this.arrowWarpToolStripMenuItem.Text = "Make Arrow";
             this.arrowWarpToolStripMenuItem.Click += new System.EventHandler(this.arrowWarpToolStripMenuItem_Click);
+            // 
+            // skewToolStripMenuItem
+            // 
+            this.skewToolStripMenuItem.Name = "skewToolStripMenuItem";
+            this.skewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.skewToolStripMenuItem.Text = "Skew";
+            this.skewToolStripMenuItem.Click += new System.EventHandler(this.skewToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -433,6 +442,7 @@
         private System.Windows.Forms.ToolStripMenuItem makeSquareToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makeAffineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem arrowWarpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem skewToolStripMenuItem;
     }
 }
 

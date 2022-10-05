@@ -6,6 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Security.Permissions;
 
 namespace ImageProcess
 {
@@ -277,6 +285,11 @@ namespace ImageProcess
         }
 
 
+        /// <summary>
+        /// This function applies a lowpass filter to the image.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="postImage"></param>
         public static void OnFilterLowpass(RasterImage image, RasterImage postImage)
         {
             int height = image.Height;
@@ -323,7 +336,11 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This function fills the area of a large image
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="postImage"></param>
         public static void FillTarget(RasterImage image, RasterImage postImage)
         {
             int height = image.Height;
@@ -347,7 +364,11 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This function applies a smoothing filter to the image.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="postImage"></param>
         public static Color BilinearInterpolate(double x, double y, RasterImage source)
         {
             int ix = (int)(x);
@@ -379,7 +400,11 @@ namespace ImageProcess
                 return Color.White;
             }
         }
-
+        /// <summary>
+        /// This function applies the square affine warp.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="postImage"></param>
         public static void MakeAffine(RasterImage image, RasterImage postImage)
         {
             int postHeight = postImage.Height;
@@ -403,50 +428,80 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This function applies an Arrow shapped warp.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="postImage"></param>
         public static void ArrowWarp(RasterImage image, RasterImage postImage)
         {
             int height = image.Height;
             int width = image.Width;
             int postHeight = postImage.Height;
             int postWidth = postImage.Width;
-            int xShiftPercent;
-            int xShift;
+            float xShiftPercent = 0;
+            float xShift = 0;
 
-            int yprime, xprime, x, y;
+            int yprime;
+            int xprime = 0;
+            int temp;
 
             //loop over target pixels
-            for (int r = 0; r < height; r++)
+            for (int r = 0; r < postHeight; r++)
             {
-                for (int c = 0; c < width; c++)
-                {       
-                        // Starts at height / height/2 or 100%
-                        // Goes down to 0% or height - r (currently at height/2) over (height/2)
-                        // Now when we are above the halfway then this doesnt work 
-                        // need to start at 0 again or 
-                        xShiftPercent = (height - r) / (height / 2);
-                        xShift = xShiftPercent * (r / 2);
-                        yprime = r;
-                        xprime = c - xShift;
-                        if (xprime < width && xprime >= 0)
-                            postImage[xprime, r] = image[c, r];
+                for (int c = 0; c < postWidth; c++)
+                {
+                    if (r <= height / 2)
+                    {
+                        xShiftPercent = (float)(height - r) / ((float)height / 2) - (float)1;
+                        xShift = (float)width / (float)2.0 * xShiftPercent;
+                        xprime = c + (int)xShift;
 
-                }  
-            }
-            /*
-            for (int r = height / 2; r < height; r++)
-            {
-                for (int c = width; c < width; c++)
-                { 
-                    xShiftPercent = (height - r) / (height);
-                    xShift = xShiftPercent * (r / 2);
-                    yprime = r;
-                    xprime = c + xShift;
+                    }
+                    if (r > height / 2)
+                    {
+                        xShiftPercent = -1 * ((float)height / (float)(height - (height - r)) - 2);
+                        //Debug.WriteLine("{0:N2}", (float)xShiftPercent);
+                        xShift = (float)width / (float)2.0 * xShiftPercent;
+                        xprime = c + (int)xShift;
+
+                    }
                     if (xprime < width && xprime >= 0)
-                        postImage[xprime, yprime] = image[c, r];
-
+                    {
+                        System.Windows.Point v = new System.Windows.Point(c, r);
+                        postImage[xprime, r] = BilinearInterpolate(v.X, v.Y, image);
+                    }
                 }
-            } */
+            }
         }
+
+        /// <summary>
+        /// This function applies a set of tranformations to the image.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="postImage"></param>
+        public static void Skew(RasterImage image, RasterImage postImage)
+        {
+            int postHeight = postImage.Height;
+            int postWidth = postImage.Width;
+
+            Matrix r1 = Matrix.Identity;
+            r1.SkewPrepend(10, 30);
+            r1.ScalePrepend(.5, .5);
+            r1.TranslatePrepend(25, 50);
+            r1.Invert();
+
+            for (int r = 0; r < postHeight; r++)
+            {
+                for (int c = 0; c < postWidth; c++)
+                {
+                    System.Windows.Point v = new System.Windows.Point(c, r);
+                    System.Windows.Point v2 = r1.Transform(v);
+
+                    postImage[c, r] = BilinearInterpolate(v2.X, v2.Y, image);
+                }
+            }
+        }
+
     }
 }

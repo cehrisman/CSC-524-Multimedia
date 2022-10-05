@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Net.Http;
@@ -142,7 +143,10 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This class function fills the base image with Midnight Blue.
+        /// </summary>
+        /// <param name="image"></param>
         public static void FillColor(RasterImage image)
         {
             int height = image.Height;
@@ -157,7 +161,10 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This class function fills the base image a gray gradient.
+        /// </summary>
+        /// <param name="image"></param>
         public static void HorizontalGradient(RasterImage image)
         {
             int height = image.Height;
@@ -174,7 +181,10 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This class function fills the base image with black/blue gradient.
+        /// </summary>
+        /// <param name="image"></param>
         public static void VerticalGradient(RasterImage image)
         {
             double height = image.Height;
@@ -190,7 +200,9 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This class function fills the base image with red/green diagonal gradient
+        /// <param name="image"></param>
         public static void DigaonalGradient(RasterImage image)
         {
             double height = image.Height;
@@ -206,7 +218,10 @@ namespace ImageProcess
                 }
             }
         }
-
+        /// <summary>
+        /// This class function fills the base image with diagonal gradient with color values projected on the diagonal.
+        /// </summary>
+        /// <param name="image"></param>
         public static void CornersDigaonalGradient(RasterImage image)
         {
             double height = image.Height;
@@ -242,21 +257,23 @@ namespace ImageProcess
                     // Dot product of v2 and itself. 
                     x1tox2 = (x2 * x2) + (y2 * y2);
                      
-                    // dividing num and denom of Orthogonal Project Equation to get final scaler
+                    // dividing num and denom of Orthogonal Project Equation
                     t = dot / x1tox2;
 
-                    // Multiply scaler to vector 2 to get new point values
+                    // Multiply scaler to vector 2 to get new points
                     x = x2 * t;
                     y = height + y2 * t;
-
-                   // Replace r->y and c->x from the orginal gradient equations
+                   
                     image[c, r, 0] = (byte)((((double)y + (width - (double)x)) / (height + width)) * 255.0);
-                    image[c, r, 1] = (byte)((((height - (double)y) + (double)x) / (height + width)) * 255.0);
+                    image[c, r, 1] = (byte)(((height - (double)y) + (double)x) / (height + width) * 255.0);
                     image[c, r, 2] = 0;
                 }
             }
         }
-
+        /// <summary>
+        /// This class function draws a horizontal yellow line.
+        /// </summary>
+        /// <param name="image"></param>
         public static void HorizontalLine(RasterImage image)
         {
             int r = 50;
@@ -267,6 +284,10 @@ namespace ImageProcess
                 image[c, 200] = Color.Yellow;
             }
         }
+        /// <summary>
+        /// This class function draws a vertical yellow line.
+        /// </summary>
+        /// <param name="image"></param>
         public static void VerticalLine(RasterImage image)
         {
             
@@ -279,21 +300,48 @@ namespace ImageProcess
                 image[401, r] = Color.Yellow;
             }
         }
-
+        /// <summary>
+        /// This class function draws a diagonal yellow line with antialising.
+        /// </summary>
+        /// <param name="image"></param>
         public static void DiagonalLine(RasterImage image)
         {
 
             double r = 100;
+            Bitmap bmp = image.toBitmap;
+            byte red;
+            byte g;
+            byte b;
             int temp;
+            double amount = 0.25;
+            Color p;
             for (int c = 100; c < 400; c++)
             {
-                
                 temp = (int)Math.Ceiling(r);
-                image[c, temp] = Color.Yellow;
-                r = r + 0.33; 
+                bmp.SetPixel(c, temp, Color.Yellow);
+                r = r + 0.33;
+                    
+                // Checks all nearby pixels and then blends based on amount of yellow present
+                for (int i = c - 1; i <= c + 1; i++)
+                    for (int j = (int)r; j <= r + 1; j++)
+                    {
+                        p = bmp.GetPixel(i, j);
+                        red = (byte)(Color.Yellow.R * amount + p.R * (1 - amount));
+                        g = (byte)(Color.Yellow.G * amount + p.G * (1 - amount));
+                        b = (byte)(Color.Yellow.B * amount + p.B * (1 - amount));
+                        bmp.SetPixel(i, j, Color.FromArgb(red, g, b));
+                        //image[i, j] = Color.Yellow;
+
+                    }
+                
             }
+            image = new RasterImage(bmp);
         }
 
+        /// <summary>
+        /// This class function converts image to monochrome.
+        /// </summary>
+        /// <param name="image"></param>
         public static void Monochrome(RasterImage image)
         {
             double mono;
@@ -307,6 +355,127 @@ namespace ImageProcess
                     image[c, r, 2] = (byte)mono;
                 }
             }
+        }
+        /// <summary>
+        /// This class function applies the Median 3x3 filter.
+        /// </summary>
+        /// <param name="image"></param>
+
+        public static void Median(RasterImage image)
+        {
+            int height = image.Height;
+            int width = image.Width;
+            List<byte> redTermsList = new List<byte>();
+            List<byte> greenTermsList = new List<byte>();
+            List<byte> blueTermsList = new List<byte>();
+            Bitmap bmp_img = image.toBitmap;
+            byte[,] imgr = new byte[width, height];
+            byte[,] imgg = new byte[width, height];
+            byte[,] imgb = new byte[width, height];
+
+            //Convert to Grayscale 
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    Color c = bmp_img.GetPixel(i, j);
+                    imgr[i, j] = c.R;
+                    imgg[i, j] = c.G;
+                    imgb[i, j] = c.B;
+                }
+            }
+
+            //applying Median Filtering 
+            for (int i = 0; i <= width - 3; i++)
+                for (int j = 0; j <= height - 3; j++)
+                {
+                    for (int x = i; x <= i + 2; x++)
+                        for (int y = j; y <= j + 2; y++)
+                        {
+                            redTermsList.Add(imgr[x, y]);
+                            greenTermsList.Add(imgg[x, y]);
+                            blueTermsList.Add(imgb[x, y]);
+                        }
+                    byte[] redTerms = redTermsList.ToArray();
+                    byte[] greenTerms = greenTermsList.ToArray();
+                    byte[] blueTerms = blueTermsList.ToArray();
+                    redTermsList.Clear();
+                    greenTermsList.Clear();
+                    blueTermsList.Clear();
+
+                    Array.Sort<byte>(redTerms);
+                    Array.Sort<byte>(greenTerms);
+                    Array.Sort<byte>(blueTerms);
+                    Array.Reverse(redTerms);
+                    Array.Reverse(greenTerms);
+                    Array.Reverse(blueTerms);
+
+                    byte redColor = redTerms[4];
+                    byte greenColor = greenTerms[4];
+                    byte blueColor = blueTerms[4];
+                    bmp_img.SetPixel(i + 1, j + 1, Color.FromArgb(redColor, greenColor, blueColor));
+                }
+            image = new RasterImage(bmp_img);
+        }
+
+        public static Color MedianPar(int i, int j, RasterImage image)
+        {
+            int height = image.Height;
+            int width = image.Width;
+            List<byte> redTermsList = new List<byte>();
+            List<byte> greenTermsList = new List<byte>();
+            List<byte> blueTermsList = new List<byte>();
+            Bitmap bmp_img = image.toBitmap;
+            //byte[,] imgr = new byte[width, height];
+            //byte[,] imgg = new byte[width, height];
+            //byte[,] imgb = new byte[width, height];
+
+            ////Convert to Grayscale 
+            //for (int i = 0; i < width; i++)
+            //{
+            //    for (int j = 0; j < height; j++)
+            //    {
+            //        Color c = bmp_img.GetPixel(i, j);
+            //        imgr[i, j] = c.R;
+            //        imgg[i, j] = c.G;
+            //        imgb[i, j] = c.B;
+            //    }
+            //}
+
+            // //applying Median Filtering 
+            //for (int i = 0; i <= width - 3; i++)
+            //  for (int j = 0; j <= height - 3; j++)
+            if (i > width - 3 || j > height - 3)
+                return Color.Black;
+
+            for (int x = i; x <= i + 2; x++)
+                for (int y = j; y <= j + 2; y++)
+                {
+                    redTermsList.Add(image[x, y,RasterImage.R]);
+                    greenTermsList.Add(image[x, y, RasterImage.G]);
+                    blueTermsList.Add(image[x, y, RasterImage.B]);
+                }
+            byte[] redTerms = redTermsList.ToArray();
+            byte[] greenTerms = greenTermsList.ToArray();
+            byte[] blueTerms = blueTermsList.ToArray();
+            redTermsList.Clear();
+            greenTermsList.Clear();
+            blueTermsList.Clear();
+
+            Array.Sort<byte>(redTerms);
+            Array.Sort<byte>(greenTerms);
+            Array.Sort<byte>(blueTerms);
+            Array.Reverse(redTerms);
+            Array.Reverse(greenTerms);
+            Array.Reverse(blueTerms);
+
+            byte redColor = redTerms[4];
+            byte greenColor = greenTerms[4];
+            byte blueColor = blueTerms[4];
+            //bmp_img.SetPixel(i + 1, j + 1, Color.FromArgb(redColor, greenColor, blueColor));
+            //  }
+            //image = new RasterImage(bmp_img);
+            return Color.FromArgb(redColor, greenColor, blueColor);
         }
     }
 }

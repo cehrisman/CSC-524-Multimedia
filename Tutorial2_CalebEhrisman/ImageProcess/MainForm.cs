@@ -1,4 +1,37 @@
-﻿using System;
+﻿/*using static System.Collections.Specialized.BitVector32;
+
+Mark off what items are complete (e.g. x, done, checkmark, etc), and put a P if partially complete. If 'P' include how to test what is working for 
+partial credit below the checklist line.
+
+Total available points:  100(135pt CSC\CENG 524)
+
+___X___ 15  Tutorial completed(if not, what was the last section completed) 
+- And for marking 'Tutorial Completed' as completed. I am assuming the Tutorial is the follow-along portions and not the tasks. 
+___X___ 5   My Favorite Color
+___X___	5	Horizontal Gradient Image
+___X___	5	Vertical Gradient Image
+___X___	10	45 Diagonal Gradient Image
+___X___	10	CSC\CENG 524 only Corner Diagonal Gradient Image
+___X___	5	Horizontal Line
+___X___	5	Vertical Wider Line
+___X___	10	Diagonal Line
+___X___	10	CSC\CENG 524 only Antialias the Diagonal Line
+___X___	10	Monochrome Image Filter
+___P___	15	Median Filter 
+- The median filter is not parallelized. It still removes the speckles. Could not figure out how to set up the Median function to work that way.
+
+___X___	15	Arrow
+___P___	15	CSC\CENG 524 only Make Skew 
+- The Make Skew functions appears to work correctly. It does shift 25 on x and 50 on y. But with stickman it is ~1/3 and ~1/2 of the space so it doesn't match yours.
+
+
+__105__	Total (please add the points and include the total here) 
+   ^^ Not sure if I can give myself partial.
+
+The grade you compute is the starting point for course staff, who reserve the right to change the grade if they disagree with your assessment and
+to deduct points for other issues they may encounter, such as errors in the submission process, naming issues, etc.
+*/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -79,7 +112,7 @@ namespace ImageProcess
         #region File menu
         private void newMenu_Click(object sender, EventArgs e)
         {
-            initImage = new RasterImage(100, 400);
+            initImage = new RasterImage(100, 100);
             ProcessImage.FillBlack(initImage);
             SetMenuOptionEnable();
             Invalidate();
@@ -441,7 +474,8 @@ namespace ImageProcess
 
         private void medianToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //GenerateImage.Median(initImage);
+            //ProcessImage.Median(initImage);
+            initImage.parallelFilter(postImage, ProcessImage.MedianPar);
             Invalidate();
         }
 
@@ -468,6 +502,13 @@ namespace ImageProcess
             int size = Math.Max(initImage.Width, initImage.Height);
             postImage = new RasterImage(size, size);
             GenerateImage.ArrowWarp(initImage, postImage);
+            Invalidate();
+        }
+
+        private void skewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            postImage = new RasterImage(initImage.Width, initImage.Height);
+            GenerateImage.Skew(initImage, postImage);
             Invalidate();
         }
     }
